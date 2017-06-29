@@ -1,0 +1,13 @@
+prefix vocab: <http://id.nlm.nih.gov/mesh/vocab#>
+prefix oio: <http://www.geneontology.org/formats/oboInOwl#>
+
+CONSTRUCT {
+  ?x oio:hasRelatedSynonym ?syn
+} WHERE {
+  ?x vocab:preferredConcept [
+     vocab:term [
+       vocab:prefLabel ?syn
+     ]
+  ]
+  
+}
