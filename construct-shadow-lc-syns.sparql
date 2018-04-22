@@ -1,0 +1,14 @@
+prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+prefix vocab: <http://id.nlm.nih.gov/mesh/vocab#>
+prefix oio: <http://www.geneontology.org/formats/oboInOwl#>
+
+CONSTRUCT {
+  ?x oio:hasRelatedSynonym ?lsyn
+} WHERE {
+  { ?x oio:hasRelatedSynonym ?syn }
+  UNION
+  { ?x rdfs:label ?syn }
+
+  BIND(lcase(?syn) AS ?lsyn)
+  
+}

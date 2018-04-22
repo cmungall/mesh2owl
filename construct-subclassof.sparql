@@ -1,10 +1,11 @@
 prefix owl: <http://www.w3.org/2002/07/owl#>
 prefix vocab: <http://id.nlm.nih.gov/mesh/vocab#>
 prefix oio: <http://www.geneontology.org/formats/oboInOwl#>
+prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
 
 CONSTRUCT {
-  ?x owl:subClassOf ?y
+  ?x a owl:Class ;
+     rdfs:subClassOf ?y
 } WHERE {
-  ?x owl:subClassOf ?y
-  
+  ?x vocab:broaderDescriptor ?y
 }
