@@ -1,3 +1,6 @@
+all: mesh-obo.obo
+
+RQUERY = robot query --tdb true
 
 mesh.nt.gz: 
 	wget ftp://nlmpubs.nlm.nih.gov/online/mesh/mesh.nt.gz
@@ -5,11 +8,14 @@ mesh.nt.gz:
 slim.nt: mesh.nt.gz
 	gzip -dc $< | ./fix-nt.pl > $@
 
+slim.rdf: slim.nt
+	riot --out=RDFXML $< > $@.tmp && mv $@.tmp $@
+
 
 Qs = label subclassof syns
 
-gen-%.ttl: slim.nt construct-%.sparql 
-	robot query -i $< --construct construct-$*.sparql $@.tmp -f ttl && mv $@.tmp $@
+gen-%.ttl: slim.rdf construct-%.sparql 
+	$(RQUERY) -i $< --construct construct-$*.sparql $@.tmp -f ttl && mv $@.tmp $@
 .PRECIOUS: gen-%.ttl
 
 mesh-obo.owl: $(patsubst %, gen-%.ttl, $(Qs))
@@ -17,7 +23,7 @@ mesh-obo.owl: $(patsubst %, gen-%.ttl, $(Qs))
 .PRECIOUS: mesh-obo.owl
 
 lc-syns.owl: mesh-obo.owl
-	robot query -i $< --construct construct-shadow-lc-syns.sparql $@.tmp -f ttl && mv $@.tmp $@
+	$(RQUERY) -i $< --construct construct-shadow-lc-syns.sparql $@.tmp -f ttl && mv $@.tmp $@
 
 
 mesh-obo.obo: mesh-obo.owl lc-syns.owl
